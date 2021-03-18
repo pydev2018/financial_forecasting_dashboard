@@ -1,0 +1,5 @@
+yfinance
+fbprophet
+streamlit
+plotly
+gunicorn==20.0.4
