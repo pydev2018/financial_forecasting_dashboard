@@ -201,7 +201,7 @@ if st.checkbox('Plot the prediction data'):
     st.write("Forecast components")
     fig2 = plot_components_plotly(m, forecast)
     #fig2 = m.plot_components(forecast)
-    st.write(fig2)
+    st.write(fig2, use_container_width=True)
 
     
 
