@@ -186,7 +186,7 @@ def predict_stock(data):
     st.subheader('Forecast data')
     st.write(forecast.tail())
         
-    st.write(f'Forecast plot for {n_years} years')
+    st.write(f'Forecast plot for {query_params["year_slider"]} years')
     fig1 = plot_plotly(m, forecast)
     st.plotly_chart(fig1)
 
