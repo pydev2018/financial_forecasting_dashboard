@@ -16,7 +16,7 @@ st.title('Stock Forecast App')
 
 stocks = (
     'BAJFINANCE.NS',
-    'BAJAJFINSV.NS',
+    'CIPLA.NS',
     'BAJAJHLDNG.NS',
     'BANKBARODA.NS'
 )
