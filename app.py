@@ -173,7 +173,7 @@ if st.button('Load and plot Symbol Data'):
     plot_raw_data(data)
     
     
-@st.cache
+@st.cache(suppress_st_warning=True)
 def predict_stock(data):
     df_train = data[['Date','Close']]
     df_train = df_train.rename(columns={"Date": "ds", "Close": "y"})
@@ -195,7 +195,7 @@ def predict_stock(data):
     st.write(fig2)
     
     
-if st.checkbox('Load and plot Symbol Data'):
+if st.checkbox('Plot the prediction data'):
     data_predict_state = st.text('predicting stock prices for the next {} years'.format(query_params["year_slider"]))
     data = session_state.data
     predict_stock(data)
