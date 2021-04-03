@@ -1,0 +1,9 @@
+Collecting cloudpickle
+  Using cached cloudpickle-1.6.0-py3-none-any.whl (23 kB)
+Collecting dask[array]
+  Using cached dask-2021.3.0-py3-none-any.whl (925 kB)
+Requirement already satisfied: pyyaml in c:\users\ay00910\appdata\roaming\python\python36\site-packages (from dask[array]) (3.13)
+Requirement already satisfied: numpy>=1.15.1 in c:\users\ay00910\.conda\envs\fbenv\lib\site-packages (from dask[array]) (1.19.5)
+Requirement already satisfied: toolz>=0.8.2 in c:\users\ay00910\appdata\roaming\python\python36\site-packages (from dask[array]) (0.9.0)
+Installing collected packages: dask, cloudpickle
+Successfully installed cloudpickle-1.6.0 dask-2021.3.0
