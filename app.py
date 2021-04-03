@@ -136,7 +136,7 @@ def load_data(ticker):
     return data
 
 
-@st.cache(suppress_st_warning=True)
+
 def plot_raw_data(data):
     
     
@@ -178,27 +178,29 @@ def predict_stock(data):
     df_train = data[['Date','Close']]
     df_train = df_train.rename(columns={"Date": "ds", "Close": "y"})
     m = Prophet()
-    m.fit(df_train)
+    m_1 = m.fit(df_train)
     future = m.make_future_dataframe(periods=period)
-    forecast = m.predict(future)
+    forecast = m_1.predict(future)
+    return m , forecast 
 
     # Show and plot forecast
-    st.subheader('Forecast data')
-    st.write(forecast.tail())
-        
-    st.write(f'Forecast plot for {query_params["year_slider"]} years')
-    fig1 = plot_plotly(m, forecast)
-    st.plotly_chart(fig1)
-
-    st.write("Forecast components")
-    fig2 = m.plot_components(forecast)
-    st.write(fig2)
+    
     
     
 if st.checkbox('Plot the prediction data'):
     data_predict_state = st.text('predicting stock prices for the next {} years'.format(query_params["year_slider"]))
     data = session_state.data
-    predict_stock(data)
+    m, forecast = predict_stock(data)
+    st.subheader('Forecast data')
+    st.write(forecast.tail())
+            
+    st.write(f'Forecast plot for {query_params["year_slider"]} years')
+    fig1 = plot_plotly(m, forecast)
+    st.plotly_chart(fig1, use_container_width=True)
+
+    st.write("Forecast components")
+    fig2 = m.plot_components(forecast)
+    st.write(fig2)
 
     
 
