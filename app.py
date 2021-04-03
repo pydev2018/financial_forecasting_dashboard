@@ -3,8 +3,8 @@ import streamlit as st
 from datetime import date
 import SessionState as session_state
 import yfinance as yf
-#from fbprophet import Prophet
-#from fbprophet.plot import plot_plotly
+from fbprophet import Prophet
+from fbprophet.plot import plot_plotly
 from plotly import graph_objs as go
 from streamlit.script_request_queue import RerunData
 from streamlit.script_runner import RerunException
@@ -173,9 +173,32 @@ if st.button('Load and plot Symbol Data'):
     plot_raw_data(data)
     
     
+@st.cache
+def predict_stock(data):
+    df_train = data[['Date','Close']]
+    df_train = df_train.rename(columns={"Date": "ds", "Close": "y"})
+    m = Prophet()
+    m.fit(df_train)
+    future = m.make_future_dataframe(periods=period)
+    forecast = m.predict(future)
+
+    # Show and plot forecast
+    st.subheader('Forecast data')
+    st.write(forecast.tail())
+        
+    st.write(f'Forecast plot for {n_years} years')
+    fig1 = plot_plotly(m, forecast)
+    st.plotly_chart(fig1)
+
+    st.write("Forecast components")
+    fig2 = m.plot_components(forecast)
+    st.write(fig2)
     
     
-    
+if st.button('Load and plot Symbol Data'):
+    data_predict_state = st.text('predicting stock prices for the next {} years'.format(query_params["year_slider"]))
+    data = session_state.data
+    predict_stock(data)
 
     
 
