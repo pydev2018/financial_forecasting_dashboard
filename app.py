@@ -4,7 +4,7 @@ from datetime import date
 import SessionState as session_state
 import yfinance as yf
 from fbprophet import Prophet
-from fbprophet.plot import plot_plotly
+from fbprophet.plot import plot_plotly , plot_components_plotly
 from plotly import graph_objs as go
 from streamlit.script_request_queue import RerunData
 from streamlit.script_runner import RerunException
@@ -199,7 +199,8 @@ if st.checkbox('Plot the prediction data'):
     st.plotly_chart(fig1, use_container_width=True)
 
     st.write("Forecast components")
-    fig2 = m.plot_components(forecast)
+    fig2 = plot_components_plotly(m, forecast)
+    #fig2 = m.plot_components(forecast)
     st.write(fig2)
 
     
