@@ -163,12 +163,12 @@ period = year_slider * 365
 
 if st.button('Load and plot Symbol Data'):
     data_load_state = st.text('Loading data...')
-    state.data = load_data(stock_selectbox)
+    session_state.data = load_data(stock_selectbox)
     data_load_state.text('Loading data... done!')
     st.subheader('Five latest rows from stock symbol, data downloaded from 2015 till today , ready for prediction!')
     st.table(session_state.data.tail())
     st.subheader('Plot of data')
-    data = state.data
+    data = session_state.data
     plot_raw_data(data)
     
 
@@ -181,7 +181,7 @@ def fit_prophet_model(data):
     m_1 = m.fit(df_train)
     return m_1
     
-m_1 = fit_prophet_model(state.data)
+m_1 = fit_prophet_model(session_state.data)
 
 
 @st.cache(suppress_st_warning=True)
@@ -199,7 +199,7 @@ if st.checkbox('Plot the prediction data'):
     try:
         data_predict_state = st.text('predicting stock prices for the next {} years'.format(query_params["year_slider"]))
         data = session_state.data
-        m, forecast = predict_stock(data)
+        m, forecast = predict_stock(data, m_1)
         st.subheader('Forecast data')
         st.write(forecast.tail())
                 
