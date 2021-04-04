@@ -139,8 +139,6 @@ def load_data(ticker):
 
 
 def plot_raw_data(data):
-    
-    
     try:
         fig = go.Figure()
         fig.add_trace(go.Scatter(x=data['Date'], y=data['Open'], name="stock_open"))
@@ -175,28 +173,29 @@ if st.button('Load and plot Symbol Data'):
     
 
 
-@st.cache
+@st.cache(suppress_st_warning=True)
 def fit_prophet_model(data):
     df_train = data[['Date','Close']]
     df_train = df_train.rename(columns={"Date": "ds", "Close": "y"})
     m = Prophet()
     m_1 = m.fit(df_train)
-    state.fitted_
+    return m_1
     
+m_1 = fit_prophet_model(state.data)
 
 
 @st.cache(suppress_st_warning=True)
-def predict_stock(data):
+def predict_stock(data, m_1):
     future = m.make_future_dataframe(periods=period)
     forecast = m_1.predict(future)
     return m , forecast 
 
-    # Show and plot forecast
+
     
     
     
 if st.checkbox('Plot the prediction data'):
-<<<<<<< HEAD
+
     try:
         data_predict_state = st.text('predicting stock prices for the next {} years'.format(query_params["year_slider"]))
         data = session_state.data
@@ -209,26 +208,14 @@ if st.checkbox('Plot the prediction data'):
         st.plotly_chart(fig1, use_container_width=True)
 
         st.write("Forecast components")
-        fig2 = m.plot_components(forecast)
-        st.write(fig2)
+        fig2 = plot_components_plotly(m, forecast)
+        #fig2 = m.plot_components(forecast)
+        st.write(fig2, use_container_width=True)
     except:
         st.markdown("## Have you loaded the data? Please press the load and plot button before running the forecast !")
-=======
-    data_predict_state = st.text('predicting stock prices for the next {} years'.format(query_params["year_slider"]))
-    data = session_state.data
-    m, forecast = predict_stock(data)
-    st.subheader('Forecast data')
-    st.write(forecast.tail())
-            
-    st.write(f'Forecast plot for {query_params["year_slider"]} years')
-    fig1 = plot_plotly(m, forecast)
-    st.plotly_chart(fig1, use_container_width=True)
 
-    st.write("Forecast components")
-    fig2 = plot_components_plotly(m, forecast)
-    #fig2 = m.plot_components(forecast)
-    st.write(fig2, use_container_width=True)
->>>>>>> 1442736739059bc473f49b91ec7018d039f0683e
+
+
 
     
 
