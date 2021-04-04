@@ -2,6 +2,7 @@
 import streamlit as st
 from datetime import date
 import SessionState as session_state
+
 import yfinance as yf
 from fbprophet import Prophet
 from fbprophet.plot import plot_plotly
@@ -20,7 +21,7 @@ layout="wide",
 query_params = st.experimental_get_query_params()
 
 state = session_state.get(
-    session_id=0, data='',first_query_params=st.experimental_get_query_params()
+    session_id=0, data='', fited_prophet='',first_query_params=st.experimental_get_query_params()
 )
 first_query_params = state.first_query_params
 
@@ -164,21 +165,28 @@ period = year_slider * 365
 
 if st.button('Load and plot Symbol Data'):
     data_load_state = st.text('Loading data...')
-    session_state.data = load_data(stock_selectbox)
+    state.data = load_data(stock_selectbox)
     data_load_state.text('Loading data... done!')
     st.subheader('Five latest rows from stock symbol, data downloaded from 2015 till today , ready for prediction!')
     st.table(session_state.data.tail())
     st.subheader('Plot of data')
-    data = session_state.data
+    data = state.data
     plot_raw_data(data)
     
-    
-@st.cache(suppress_st_warning=True)
-def predict_stock(data):
+
+
+@st.cache
+def fit_prophet_model(data):
     df_train = data[['Date','Close']]
     df_train = df_train.rename(columns={"Date": "ds", "Close": "y"})
     m = Prophet()
     m_1 = m.fit(df_train)
+    state.fitted_
+    
+
+
+@st.cache(suppress_st_warning=True)
+def predict_stock(data):
     future = m.make_future_dataframe(periods=period)
     forecast = m_1.predict(future)
     return m , forecast 
@@ -188,19 +196,22 @@ def predict_stock(data):
     
     
 if st.checkbox('Plot the prediction data'):
-    data_predict_state = st.text('predicting stock prices for the next {} years'.format(query_params["year_slider"]))
-    data = session_state.data
-    m, forecast = predict_stock(data)
-    st.subheader('Forecast data')
-    st.write(forecast.tail())
-            
-    st.write(f'Forecast plot for {query_params["year_slider"]} years')
-    fig1 = plot_plotly(m, forecast)
-    st.plotly_chart(fig1, use_container_width=True)
+    try:
+        data_predict_state = st.text('predicting stock prices for the next {} years'.format(query_params["year_slider"]))
+        data = session_state.data
+        m, forecast = predict_stock(data)
+        st.subheader('Forecast data')
+        st.write(forecast.tail())
+                
+        st.write(f'Forecast plot for {query_params["year_slider"]} years')
+        fig1 = plot_plotly(m, forecast)
+        st.plotly_chart(fig1, use_container_width=True)
 
-    st.write("Forecast components")
-    fig2 = m.plot_components(forecast)
-    st.write(fig2)
+        st.write("Forecast components")
+        fig2 = m.plot_components(forecast)
+        st.write(fig2)
+    except:
+        st.markdown("## Have you loaded the data? Please press the load and plot button before running the forecast !")
 
     
 

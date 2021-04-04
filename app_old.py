@@ -141,7 +141,6 @@ def plot_raw_data():
     
     
 if st.button('Plot Raw Data'):
-    
     plot_raw_data()
     raise RerunException(RerunData())
     
